@@ -22,14 +22,16 @@ export default function LoginScreen() {
 
   return (
     <div className="relative grid min-h-dvh place-items-center overflow-hidden bg-[#0a1f33] px-4">
-      {/* decorative depth rings */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-40 -top-40 h-[36rem] w-[36rem] rounded-full border border-accent/10"
+      {/* beach background */}
+      <img
+        src="/images/beach-bg.png"
+        alt="Pemandangan pantai Desa Bongo saat senja"
+        className="absolute inset-0 h-full w-full object-cover"
       />
+      {/* readability overlay */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-52 -left-40 h-[40rem] w-[40rem] rounded-full border border-primary/10"
+        className="absolute inset-0 bg-gradient-to-b from-[#0a1f33]/70 via-[#0a1f33]/55 to-[#0a1f33]/85"
       />
 
       <div className="relative w-full max-w-sm">
@@ -46,7 +48,7 @@ export default function LoginScreen() {
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-border bg-card p-6 shadow-2xl"
+          className="rounded-xl border border-border bg-card/90 p-6 shadow-2xl backdrop-blur-md"
         >
           <h2 className="text-sm font-semibold text-card-foreground">Masuk ke Navigator</h2>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">

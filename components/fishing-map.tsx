@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { MapContainer, TileLayer, Circle, Marker, useMap } from "react-leaflet"
 import L from "leaflet"
 import {
@@ -32,6 +32,39 @@ function makeIcon(spot: FishingSpot, active: boolean) {
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   })
+}
+
+const userIcon = L.divIcon({
+  className: "",
+  html: `<div class="user-loc"><span class="user-loc-pulse"></span><span class="user-loc-dot"></span></div>`,
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+})
+
+function UserLocation() {
+  const map = useMap()
+  const [pos, setPos] = useState<[number, number] | null>(null)
+  const [centered, setCentered] = useState(false)
+
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return
+    const id = navigator.geolocation.watchPosition(
+      (p) => {
+        const next: [number, number] = [p.coords.latitude, p.coords.longitude]
+        setPos(next)
+        setCentered((done) => {
+          if (!done) map.flyTo(next, 12, { duration: 1 })
+          return true
+        })
+      },
+      (err) => console.log("[v0] geolocation error:", err.message),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 },
+    )
+    return () => navigator.geolocation.clearWatch(id)
+  }, [map])
+
+  if (!pos) return null
+  return <Marker position={pos} icon={userIcon} title="Lokasi Anda saat ini" />
 }
 
 function FlyTo({ spot }: { spot: FishingSpot | null }) {
@@ -91,6 +124,7 @@ export default function FishingMap({
         />
       ))}
 
+      <UserLocation />
       <FlyTo spot={selectedSpot} />
     </MapContainer>
   )
